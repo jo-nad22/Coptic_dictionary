@@ -128,7 +128,6 @@
                    onkeyup="searchDictionary()">
         </div>
         
-        <!-- MODIFIED Disclaimer Box -->
         <div id="disclaimer" class="disclaimer-box fade-in-effect">
             <p><b>ملحوظة هامة:</b> هذا القاموس ما زال قيد التطوير وقد يحتوي على بعض الأخطاء.</p>
             <p>نفخر بكونه <b>أول قاموس للغة القبطية</b> مدعوم بتقنيات الذكاء الاصطناعي.</p>
@@ -252,7 +251,8 @@
             hideElement(onlineResultDisplay);
             onlineResultContent.innerHTML = '';
 
-            const apiKey = "";
+            // **MODIFIED: API Key has been inserted**
+            const apiKey = "AIzaSyBmT1DlO6At0OpDZET3M1bsp8Jidz-CGZo";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
             
             const prompt = `مهمتك هي العمل كخبير دقيق في اللغة القبطية (اللهجة البحيرية) وتقديم معلومات شاملة عن الكلمة أو العبارة: "${term}".
