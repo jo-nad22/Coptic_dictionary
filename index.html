@@ -131,13 +131,13 @@
         .user-message {
             background-color: #D7CCC8;
             color: #3E2723;
-            align-self: flex-start; /* Messages from user on the left (since it's RTL) */
+            align-self: flex-start;
             border-bottom-left-radius: 0;
         }
         .sophia-message {
             background-color: #A1887F;
             color: white;
-            align-self: flex-end; /* Sophia's messages on the right */
+            align-self: flex-end;
             border-bottom-right-radius: 0;
         }
         .sophia-message .coptic-text { color: #FFF; }
@@ -184,7 +184,8 @@
     </header>
     <div class="container mx-auto p-6">
         <div class="mb-8">
-            <input type="text" id="searchInput" class="search-input w-full p-4 text-lg border-2 border-[#A1887F] rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#8D6E63] placeholder-gray-500 text-right" placeholder="ابحث عن كلمة بالقبطية، النطق العربي، أو المعنى العربي..." onkeyup="searchDictionary()">
+            <!-- MODIFIED: Removed onkeyup from HTML -->
+            <input type="text" id="searchInput" class="search-input w-full p-4 text-lg border-2 border-[#A1887F] rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#8D6E63] placeholder-gray-500 text-right" placeholder="ابحث عن كلمة بالقبطية، النطق العربي، أو المعنى العربي...">
         </div>
         <div id="disclaimer" class="disclaimer-box fade-in-effect">
             <p><b>ملحوظة هامة:</b> هذا القاموس ما زال قيد التطوير وقد يحتوي على بعض الأخطاء.</p>
@@ -306,4 +307,5 @@
             }
 
             async function fetchOnlineDefinition(term) {
-                applyFadeIn(l
+                applyFadeIn(loadingIndicator);
+                hideElement(searchOnlineButto
