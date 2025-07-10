@@ -186,7 +186,6 @@
         <div class="mb-8">
             <input type="text" id="searchInput" class="search-input w-full p-4 text-lg border-2 border-[#A1887F] rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#8D6E63] placeholder-gray-500 text-right" placeholder="ابحث عن كلمة بالقبطية، النطق العربي، أو المعنى العربي..." onkeyup="searchDictionary()">
         </div>
-        <!-- MODIFIED Disclaimer Box -->
         <div id="disclaimer" class="disclaimer-box fade-in-effect">
             <p><b>ملحوظة هامة:</b> هذا القاموس ما زال قيد التطوير وقد يحتوي على بعض الأخطاء.</p>
             <p>نفخر بكونه <b>أول قاموس قبطي</b> مدعوم بالذكاء الاصطناعي، مع دعم كامل لـ<b>القبطي المعرب</b>.</p>
@@ -247,68 +246,64 @@
     </div>
 
     <script>
-        // --- Existing Dictionary Script ---
-        const dictionary = [
-            { coptic: "ⲧⲉⲃⲧⲓ", pronunciation_ar: "تِبتي", meaning_ar: "سمكة" }, { coptic: "ⲙⲱⲟⲩ", pronunciation_ar: "مو أُو", meaning_ar: "ماء" }, { coptic: "ⲱⲓⲕ", pronunciation_ar: "أُويك", meaning_ar: "خبز" }, { coptic: "ⲣⲏ", pronunciation_ar: "ري", meaning_ar: "شمس" }, { coptic: "ⲏⲓ", pronunciation_ar: "إِي", meaning_ar: "بيت" }, { coptic: "ⲁⲅⲁⲡⲏ", pronunciation_ar: "أغابي", meaning_ar: "محبة" }, { coptic: "ⲣⲱⲙⲓ", pronunciation_ar: "رومي", meaning_ar: "إنسان/رجل" }, { coptic: "ⲥϩⲓⲙⲓ", pronunciation_ar: "إسهيمي", meaning_ar: "امرأة" }, { coptic: "ⲟⲩⲱⲓⲛⲓ", pronunciation_ar: "أوويني", meaning_ar: "نور" }, { coptic: "ⲣⲁⲛ", pronunciation_ar: "ران", meaning_ar: "اسم" }, { coptic: "ⲛⲟⲩⲧⲉ", pronunciation_ar: "نوتي", meaning_ar: "الله" }, { coptic: "ⲁⲅⲅⲉⲗⲟⲥ", pronunciation_ar: "أنجيلوس", meaning_ar: "ملاك" }, { coptic: "ⲧⲟⲟⲩ", pronunciation_ar: "تو أُو", meaning_ar: "جبل" }, { coptic: "ⲉⲓⲱⲧ", pronunciation_ar: "يوت", meaning_ar: "أب" }, { coptic: "ⲙⲁⲁⲩ", pronunciation_ar: "ما أُو", meaning_ar: "أم" }, { coptic: "ϣⲏⲣⲓ", pronunciation_ar: "شيري", meaning_ar: "ابن/طفل" }, { coptic: "ϣⲉⲉⲣⲓ", pronunciation_ar: "شيري (مؤنث)", meaning_ar: "ابنة/طفلة" }, { coptic: "ⲕⲁϩ", pronunciation_ar: "كاه", meaning_ar: "أرض" }, { coptic: "ⲡⲉ", pronunciation_ar: "بي", meaning_ar: "سماء" }, { coptic: "ⲭⲁⲣⲓⲥ", pronunciation_ar: "خاريس", meaning_ar: "نعمة" }, { coptic: "ⲥⲟⲛ", pronunciation_ar: "صون", meaning_ar: "أخ" }, { coptic: "ⲥⲱⲛⲓ", pronunciation_ar: "صوني", meaning_ar: "أخت" }, { coptic: "ϫⲟⲉⲓⲥ", pronunciation_ar: "تشويس", meaning_ar: "سيد/رب" }, { coptic: "ϩⲏⲧ", pronunciation_ar: "هيت", meaning_ar: "قلب" }, { coptic: "ⲁϥⲧ", pronunciation_ar: "آفت", meaning_ar: "رأس" }, { coptic: "ϫⲓϫ", pronunciation_ar: "چيتش", meaning_ar: "يد" }, { coptic: "ⲃⲁⲗ", pronunciation_ar: "ڤال", meaning_ar: "عين" }, { coptic: "ⲣⲟ", pronunciation_ar: "رو", meaning_ar: "فم" }, { coptic: "ⲛⲁϩϯ", pronunciation_ar: "ناهتي", meaning_ar: "إيمان" }, { coptic: "ⲥⲁϫⲓ", pronunciation_ar: "ساچِي", meaning_ar: "كلمة/كلام" }, { coptic: "ⲁϣ", pronunciation_ar: "آش", meaning_ar: "ماذا/أي" }, { coptic: "ⲛⲓⲙ", pronunciation_ar: "نيم", meaning_ar: "مَنْ" }, { coptic: "ⲑⲱⲛ", pronunciation_ar: "ثون", meaning_ar: "أين" }, { coptic: "ⲧⲛⲁⲩ", pronunciation_ar: "إتناو", meaning_ar: "متى" }, { coptic: "ⲟⲩ", pronunciation_ar: "أو", meaning_ar: "واحد/واحدة (للمذكر)" }, { coptic: "ⲟⲩⲓ", pronunciation_ar: "أوي", meaning_ar: "واحدة (للمؤنث)" }, { coptic: "ⲥⲛⲁⲩ", pronunciation_ar: "إسناف", meaning_ar: "اثنان/اثنتان" }, { coptic: "ϣⲟⲙⲧ", pronunciation_ar: "شومت", meaning_ar: "ثلاثة" }, { coptic: "ϥⲧⲟⲟⲩ", pronunciation_ar: "إفتو أو", meaning_ar: "أربعة" }, { coptic: "ϯⲟⲩ", pronunciation_ar: "إتيو", meaning_ar: "خمسة" }, { coptic: "ⲥⲟⲟⲩ", pronunciation_ar: "صو أو", meaning_ar: "ستة" }, { coptic: "ϣⲁϣϥ", pronunciation_ar: "شاشف", meaning_ar: "سبعة" }, { coptic: "ϣⲙⲟⲩⲛ", pronunciation_ar: "إشمون", meaning_ar: "ثمانية" }, { coptic: "ⲯⲓⲥ", pronunciation_ar: "إبسيس", meaning_ar: "تسعة" }, { coptic: "ⲙⲏⲧ", pronunciation_ar: "ميت", meaning_ar: "عشرة" }, { coptic: "ⲉϩⲟⲟⲩ", pronunciation_ar: "إيهوؤو", meaning_ar: "يوم" }, { coptic: "ⲉϫⲱⲣϩ", pronunciation_ar: "إيجوره", meaning_ar: "ليلة" }, { coptic: "ⲣⲟⲙⲡⲓ", pronunciation_ar: "رومبي", meaning_ar: "سنة" }, { coptic: "ⲁⲃⲟⲧ", pronunciation_ar: "أڤوت", meaning_ar: "شهر" }, { coptic: "ⲡⲛⲉⲩⲙⲁ", pronunciation_ar: "إبنيفما", meaning_ar: "روح" }, { coptic: "ⲥⲱⲙⲁ", pronunciation_ar: "صوما", meaning_ar: "جسد" }, { coptic: "ⲯⲩⲭⲏ", pronunciation_ar: "إبسيشي", meaning_ar: "نفس" }, { coptic: "ⲛⲟϭ", pronunciation_ar: "نوتش", meaning_ar: "كبير" }, { coptic: "ⲕⲟⲩϫⲓ", pronunciation_ar: "كودجي", meaning_ar: "صغير" }, { coptic: "ⲛⲁⲛⲟⲩϥ", pronunciation_ar: "نانوف", meaning_ar: "جيد/صالح (للمذكر)" }, { coptic: "ⲛⲁⲛⲟⲩⲥ", pronunciation_ar: "نانوس", meaning_ar: "جيدة/صالحة (للمؤنث)" }, { coptic: "ϩⲱⲟⲩ", pronunciation_ar: "هوأوو", meaning_ar: "شرير/سيء" }, { coptic: "ⲙⲉⲣⲓⲧ", pronunciation_ar: "ميريت", meaning_ar: "حبيب/محبوب" }, { coptic: "ϯⲙⲓ", pronunciation_ar: "تيمي", meaning_ar: "مدينة/قرية" }, { coptic: "ⲙⲟⲛⲁⲭⲟⲥ", pronunciation_ar: "موناخوس", meaning_ar: "راهب" }
-        ];
-        const dictionaryEntriesContainer = document.getElementById('dictionaryEntries');
-        const noResultsDiv = document.getElementById('noResults');
-        const searchOnlineButton = document.getElementById('searchOnlineButton');
-        const onlineSearchTermSpan = document.getElementById('onlineSearchTerm');
-        const initialMessageDiv = document.getElementById('initialMessage');
-        const searchInput = document.getElementById('searchInput');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const onlineResultDisplay = document.getElementById('onlineResultDisplay');
-        const onlineResultContent = document.getElementById('onlineResultContent');
+        // **FIX: Wrap all JS in DOMContentLoaded listener for robust execution**
+        document.addEventListener('DOMContentLoaded', function() {
+            const dictionary = [
+                { coptic: "ⲧⲉⲃⲧⲓ", pronunciation_ar: "تِبتي", meaning_ar: "سمكة" }, { coptic: "ⲙⲱⲟⲩ", pronunciation_ar: "مو أُو", meaning_ar: "ماء" }, { coptic: "ⲱⲓⲕ", pronunciation_ar: "أُويك", meaning_ar: "خبز" }, { coptic: "ⲣⲏ", pronunciation_ar: "ري", meaning_ar: "شمس" }, { coptic: "ⲏⲓ", pronunciation_ar: "إِي", meaning_ar: "بيت" }, { coptic: "ⲁⲅⲁⲡⲏ", pronunciation_ar: "أغابي", meaning_ar: "محبة" }, { coptic: "ⲣⲱⲙⲓ", pronunciation_ar: "رومي", meaning_ar: "إنسان/رجل" }, { coptic: "ⲥϩⲓⲙⲓ", pronunciation_ar: "إسهيمي", meaning_ar: "امرأة" }, { coptic: "ⲟⲩⲱⲓⲛⲓ", pronunciation_ar: "أوويني", meaning_ar: "نور" }, { coptic: "ⲣⲁⲛ", pronunciation_ar: "ران", meaning_ar: "اسم" }, { coptic: "ⲛⲟⲩⲧⲉ", pronunciation_ar: "نوتي", meaning_ar: "الله" }, { coptic: "ⲁⲅⲅⲉⲗⲟⲥ", pronunciation_ar: "أنجيلوس", meaning_ar: "ملاك" }, { coptic: "ⲧⲟⲟⲩ", pronunciation_ar: "تو أُو", meaning_ar: "جبل" }, { coptic: "ⲉⲓⲱⲧ", pronunciation_ar: "يوت", meaning_ar: "أب" }, { coptic: "ⲙⲁⲁⲩ", pronunciation_ar: "ما أُو", meaning_ar: "أم" }, { coptic: "ϣⲏⲣⲓ", pronunciation_ar: "شيري", meaning_ar: "ابن/طفل" }, { coptic: "ϣⲉⲉⲣⲓ", pronunciation_ar: "شيري (مؤنث)", meaning_ar: "ابنة/طفلة" }, { coptic: "ⲕⲁϩ", pronunciation_ar: "كاه", meaning_ar: "أرض" }, { coptic: "ⲡⲉ", pronunciation_ar: "بي", meaning_ar: "سماء" }, { coptic: "ⲭⲁⲣⲓⲥ", pronunciation_ar: "خاريس", meaning_ar: "نعمة" }, { coptic: "ⲥⲟⲛ", pronunciation_ar: "صون", meaning_ar: "أخ" }, { coptic: "ⲥⲱⲛⲓ", pronunciation_ar: "صوني", meaning_ar: "أخت" }, { coptic: "ϫⲟⲉⲓⲥ", pronunciation_ar: "تشويس", meaning_ar: "سيد/رب" }, { coptic: "ϩⲏⲧ", pronunciation_ar: "هيت", meaning_ar: "قلب" }, { coptic: "ⲁϥⲧ", pronunciation_ar: "آفت", meaning_ar: "رأس" }, { coptic: "ϫⲓϫ", pronunciation_ar: "چيتش", meaning_ar: "يد" }, { coptic: "ⲃⲁⲗ", pronunciation_ar: "ڤال", meaning_ar: "عين" }, { coptic: "ⲣⲟ", pronunciation_ar: "رو", meaning_ar: "فم" }, { coptic: "ⲛⲁϩϯ", pronunciation_ar: "ناهتي", meaning_ar: "إيمان" }, { coptic: "ⲥⲁϫⲓ", pronunciation_ar: "ساچِي", meaning_ar: "كلمة/كلام" }, { coptic: "ⲁϣ", pronunciation_ar: "آش", meaning_ar: "ماذا/أي" }, { coptic: "ⲛⲓⲙ", pronunciation_ar: "نيم", meaning_ar: "مَنْ" }, { coptic: "ⲑⲱⲛ", pronunciation_ar: "ثون", meaning_ar: "أين" }, { coptic: "ⲧⲛⲁⲩ", pronunciation_ar: "إتناو", meaning_ar: "متى" }, { coptic: "ⲟⲩ", pronunciation_ar: "أو", meaning_ar: "واحد/واحدة (للمذكر)" }, { coptic: "ⲟⲩⲓ", pronunciation_ar: "أوي", meaning_ar: "واحدة (للمؤنث)" }, { coptic: "ⲥⲛⲁⲩ", pronunciation_ar: "إسناف", meaning_ar: "اثنان/اثنتان" }, { coptic: "ϣⲟⲙⲧ", pronunciation_ar: "شومت", meaning_ar: "ثلاثة" }, { coptic: "ϥⲧⲟⲟⲩ", pronunciation_ar: "إفتو أو", meaning_ar: "أربعة" }, { coptic: "ϯⲟⲩ", pronunciation_ar: "إتيو", meaning_ar: "خمسة" }, { coptic: "ⲥⲟⲟⲩ", pronunciation_ar: "صو أو", meaning_ar: "ستة" }, { coptic: "ϣⲁϣϥ", pronunciation_ar: "شاشف", meaning_ar: "سبعة" }, { coptic: "ϣⲙⲟⲩⲛ", pronunciation_ar: "إشمون", meaning_ar: "ثمانية" }, { coptic: "ⲯⲓⲥ", pronunciation_ar: "إبسيس", meaning_ar: "تسعة" }, { coptic: "ⲙⲏⲧ", pronunciation_ar: "ميت", meaning_ar: "عشرة" }, { coptic: "ⲉϩⲟⲟⲩ", pronunciation_ar: "إيهوؤو", meaning_ar: "يوم" }, { coptic: "ⲉϫⲱⲣϩ", pronunciation_ar: "إيجوره", meaning_ar: "ليلة" }, { coptic: "ⲣⲟⲙⲡⲓ", pronunciation_ar: "رومبي", meaning_ar: "سنة" }, { coptic: "ⲁⲃⲟⲧ", pronunciation_ar: "أڤوت", meaning_ar: "شهر" }, { coptic: "ⲡⲛⲉⲩⲙⲁ", pronunciation_ar: "إبنيفما", meaning_ar: "روح" }, { coptic: "ⲥⲱⲙⲁ", pronunciation_ar: "صوما", meaning_ar: "جسد" }, { coptic: "ⲯⲩⲭⲏ", pronunciation_ar: "إبسيشي", meaning_ar: "نفس" }, { coptic: "ⲛⲟϭ", pronunciation_ar: "نوتش", meaning_ar: "كبير" }, { coptic: "ⲕⲟⲩϫⲓ", pronunciation_ar: "كودجي", meaning_ar: "صغير" }, { coptic: "ⲛⲁⲛⲟⲩϥ", pronunciation_ar: "نانوف", meaning_ar: "جيد/صالح (للمذكر)" }, { coptic: "ⲛⲁⲛⲟⲩⲥ", pronunciation_ar: "نانوس", meaning_ar: "جيدة/صالحة (للمؤنث)" }, { coptic: "ϩⲱⲟⲩ", pronunciation_ar: "هوأوو", meaning_ar: "شرير/سيء" }, { coptic: "ⲙⲉⲣⲓⲧ", pronunciation_ar: "ميريت", meaning_ar: "حبيب/محبوب" }, { coptic: "ϯⲙⲓ", pronunciation_ar: "تيمي", meaning_ar: "مدينة/قرية" }, { coptic: "ⲙⲟⲛⲁⲭⲟⲥ", pronunciation_ar: "موناخوس", meaning_ar: "راهب" }
+            ];
+            const dictionaryEntriesContainer = document.getElementById('dictionaryEntries');
+            const noResultsDiv = document.getElementById('noResults');
+            const searchOnlineButton = document.getElementById('searchOnlineButton');
+            const onlineSearchTermSpan = document.getElementById('onlineSearchTerm');
+            const initialMessageDiv = document.getElementById('initialMessage');
+            const searchInput = document.getElementById('searchInput');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const onlineResultDisplay = document.getElementById('onlineResultDisplay');
+            const onlineResultContent = document.getElementById('onlineResultContent');
 
-        function applyFadeIn(element) { if (element) { element.classList.remove('hidden'); void element.offsetWidth; element.classList.add('fade-in-effect'); } }
-        function hideElement(element) { if (element) { element.classList.remove('fade-in-effect'); element.classList.add('hidden'); } }
+            function applyFadeIn(element) { if (element) { element.classList.remove('hidden'); void element.offsetWidth; element.classList.add('fade-in-effect'); } }
+            function hideElement(element) { if (element) { element.classList.remove('fade-in-effect'); element.classList.add('hidden'); } }
 
-        function displayEntries(entriesToDisplay, searchTerm = "") {
-            dictionaryEntriesContainer.innerHTML = '';
-            hideElement(onlineResultDisplay);
-            onlineResultContent.innerHTML = '';
-            hideElement(loadingIndicator);
-            if (entriesToDisplay.length === 0) {
-                if (searchTerm) {
-                    hideElement(initialMessageDiv);
-                    document.getElementById('noResultsMessage').textContent = 'لم يتم العثور على نتائج مطابقة لبحثك في القاموس المحلي.';
-                    onlineSearchTermSpan.textContent = searchTerm;
-                    searchOnlineButton.classList.remove('hidden');
-                    applyFadeIn(noResultsDiv);
-                }
-            } else {
-                hideElement(initialMessageDiv);
-                hideElement(noResultsDiv);
-                applyFadeIn(dictionaryEntriesContainer);
-                entriesToDisplay.forEach((entry, index) => {
-                    const cardDiv = document.createElement('div');
-                    cardDiv.className = 'word-card rounded-lg p-6 shadow-lg text-center fade-in-effect';
-                    cardDiv.style.animationDelay = `${index * 0.05}s`;
-                    cardDiv.innerHTML = `<h2 class="coptic-text font-bold mb-3">${entry.coptic}</h2><p class="pronunciation-text text-lg mb-2">(${entry.pronunciation_ar})</p><p class="meaning-text text-xl">${entry.meaning_ar}</p>`;
-                    dictionaryEntriesContainer.appendChild(cardDiv);
-                });
-            }
-        }
-
-        function searchDictionary() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            if (!searchTerm) {
+            function displayEntries(entriesToDisplay, searchTerm = "") {
                 dictionaryEntriesContainer.innerHTML = '';
-                hideElement(dictionaryEntriesContainer);
-                hideElement(noResultsDiv);
-                applyFadeIn(initialMessageDiv);
-                return;
+                hideElement(onlineResultDisplay);
+                onlineResultContent.innerHTML = '';
+                hideElement(loadingIndicator);
+                if (entriesToDisplay.length === 0) {
+                    if (searchTerm) {
+                        hideElement(initialMessageDiv);
+                        document.getElementById('noResultsMessage').textContent = 'لم يتم العثور على نتائج مطابقة لبحثك في القاموس المحلي.';
+                        onlineSearchTermSpan.textContent = searchTerm;
+                        searchOnlineButton.classList.remove('hidden');
+                        applyFadeIn(noResultsDiv);
+                    }
+                } else {
+                    hideElement(initialMessageDiv);
+                    hideElement(noResultsDiv);
+                    applyFadeIn(dictionaryEntriesContainer);
+                    entriesToDisplay.forEach((entry, index) => {
+                        const cardDiv = document.createElement('div');
+                        cardDiv.className = 'word-card rounded-lg p-6 shadow-lg text-center fade-in-effect';
+                        cardDiv.style.animationDelay = `${index * 0.05}s`;
+                        cardDiv.innerHTML = `<h2 class="coptic-text font-bold mb-3">${entry.coptic}</h2><p class="pronunciation-text text-lg mb-2">(${entry.pronunciation_ar})</p><p class="meaning-text text-xl">${entry.meaning_ar}</p>`;
+                        dictionaryEntriesContainer.appendChild(cardDiv);
+                    });
+                }
             }
-            hideElement(initialMessageDiv);
-            const filteredEntries = dictionary.filter(entry => entry.coptic.toLowerCase().includes(searchTerm) || entry.pronunciation_ar.toLowerCase().includes(searchTerm) || entry.meaning_ar.toLowerCase().includes(searchTerm));
-            displayEntries(filteredEntries, searchTerm);
-        }
 
-        async function fetchOnlineDefinition(term) {
-            applyFadeIn(loadingIndicator);
-            hideElement(searchOnlineButton); 
-            hideElement(onlineResultDisplay);
-            onlineResultContent.innerHTML = '';
-            const apiKey = "AIzaSyBmT1DlO6At0OpDZET3M1bsp8Jidz-CGZo";
-            const apiUrl = `https://generativelanguage
+            function searchDictionary() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                if (!searchTerm) {
+                    dictionaryEntriesContainer.innerHTML = '';
+                    hideElement(dictionaryEntriesContainer);
+                    hideElement(noResultsDiv);
+                    applyFadeIn(initialMessageDiv);
+                    return;
+                }
+                hideElement(initialMessageDiv);
+                const filteredEntries = dictionary.filter(entry => entry.coptic.toLowerCase().includes(searchTerm) || entry.pronunciation_ar.toLowerCase().includes(searchTerm) || entry.meaning_ar.toLowerCase().includes(searchTerm));
+                displayEntries(filteredEntries, searchTerm);
+            }
+
+            async function fetchOnlineDefinition(term) {
+                applyFadeIn(l
