@@ -3,149 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قاموس اللغة القبطية المطور (بحث أونلاين محسن)</title>
+    <title>قاموس اللغة القبطية مع المساعد الذكي صوفيا</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@700&family=Noto+Sans+Coptic&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Noto Sans Arabic', sans-serif;
-            background-color: #FDF5E6; /* Papyrus-like background */
-            color: #3E2723; /* Darkest brown for general text */
-            /* Subtle Coptic cross pattern background */
+            background-color: #FDF5E6;
+            color: #3E2723;
             background-image: url("data:image/svg+xml,%3Csvg width='70' height='70' viewBox='0 0 70 70' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M32.5 10 H37.5 V22.5 H50 V27.5 H37.5 V40 H50 V45 H37.5 V57.5 H32.5 V45 H20 V40 H32.5 V27.5 H20 V22.5 H32.5Z' fill='%235D4037' fill-opacity='0.035'/%3E%3C/svg%3E");
-            background-attachment: fixed; /* Keep pattern fixed during scroll */
+            background-attachment: fixed;
         }
-        .header-title {
-            font-family: 'El Messiri', sans-serif; /* Distinct font for main header */
-        }
-        /* -- MODIFIED: Unified Color Scheme -- */
-        .coptic-text {
-            font-family: 'Noto Sans Coptic', sans-serif;
-            font-size: 1.7rem;
-            color: #5D4037; /* Coptic Text Color */
-        }
-        .pronunciation-text {
-            font-style: italic;
-            font-size: 1.15rem;
-            color: #BF360C; /* Pronunciation Color (Orange-Red) */
-        }
-        .meaning-text {
-            font-size: 1.25rem;
-            color: #2E7D32; /* Meaning Color (Green) */
-        }
+        .header-title { font-family: 'El Messiri', sans-serif; }
+        .coptic-text { font-family: 'Noto Sans Coptic', sans-serif; font-size: 1.7rem; color: #5D4037; }
+        .pronunciation-text { font-style: italic; font-size: 1.15rem; color: #BF360C; }
+        .meaning-text { font-size: 1.25rem; color: #2E7D32; }
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #ECE0D1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #A1887F; border-radius: 10px; border: 2px solid #ECE0D1; }
         ::-webkit-scrollbar-thumb:hover { background: #795548; }
         .search-input { background-color: #FFFDF9; }
-        .search-input:focus {
-            border-color: #8D6E63;
-            box-shadow: 0 0 0 0.25rem rgba(141, 110, 99, 0.2);
-        }
-        .word-card {
-            border: 1px solid #D7CCC8;
-            background-color: #FFF8E1;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 12px;
-        }
-        .word-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-        }
-        .initial-placeholder, .online-result-container, .no-results-container {
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #BCAAA4;
-            border-radius: 12px;
-            background-color: rgba(245, 245, 245, 0.9);
-            padding: 20px;
-            backdrop-filter: blur(2px);
-        }
-        .online-result-content {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            text-align: right;
-            width: 100%;
-            max-width: 600px;
-        }
-        .disclaimer-box {
-            background-color: #FFF8E1;
-            border-left: 5px solid #A1887F;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-        .disclaimer-box p {
-            margin: 0.25rem 0;
-            color: #5D4037;
-        }
-        .disclaimer-box b {
-            font-weight: bold;
-            color: #3E2723;
-        }
-        /* Styles for colored AI results */
+        .search-input:focus { border-color: #8D6E63; box-shadow: 0 0 0 0.25rem rgba(141, 110, 99, 0.2); }
+        .word-card { border: 1px solid #D7CCC8; background-color: #FFF8E1; transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 12px; }
+        .word-card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
+        .initial-placeholder, .online-result-container, .no-results-container { min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #BCAAA4; border-radius: 12px; background-color: rgba(245, 245, 245, 0.9); padding: 20px; backdrop-filter: blur(2px); }
+        .online-result-content { background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: right; width: 100%; max-width: 600px; }
+        .disclaimer-box { background-color: #FFF8E1; border-left: 5px solid #A1887F; padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; }
+        .disclaimer-box p { margin: 0.5rem 0; color: #5D4037; }
+        .disclaimer-box b { font-weight: bold; color: #3E2723; }
         .ai-result-label { font-weight: bold; color: #3E2723; }
         .ai-result-coptic { font-family: 'Noto Sans Coptic', sans-serif; font-size: 1.5rem; color: #5D4037; }
         .ai-result-pronunciation { font-style: italic; color: #BF360C; }
         .ai-result-meaning { color: #2E7D32; }
         .ai-result-explanation { font-size: 0.9rem; color: #616161; margin-top: 8px; }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #5D4037;
-            animation: spin 1s ease infinite;
-        }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #5D4037; animation: spin 1s ease infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in-effect { animation: fadeIn 0.6s ease-out forwards; }
+        
+        /* --- Sophia Chatbot Styles --- */
+        #sophia-fab {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 64px;
+            height: 64px;
+            background-color: #8D6E63;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+        #sophia-fab:hover {
+            transform: scale(1.1);
+        }
+        #sophia-modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #sophia-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        #sophia-chat-window {
+            width: 90%;
+            max-width: 500px;
+            height: 70vh;
+            background-color: #FDF5E6;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        #sophia-modal.visible #sophia-chat-window {
+            transform: scale(1);
+        }
+        #sophia-chat-header {
+            background-color: #8D6E63;
+            color: white;
+            padding: 1rem;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #sophia-chat-header h3 {
+            font-family: 'El Messiri', sans-serif;
+            font-size: 1.5rem;
+        }
+        #sophia-chat-header .coptic-text {
+            color: #E0E0E0;
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+        }
+        #sophia-chat-log {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .chat-message {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+        .user-message {
+            background-color: #D7CCC8;
+            color: #3E2723;
+            align-self: flex-start; /* Messages from user on the left (since it's RTL) */
+            border-bottom-left-radius: 0;
+        }
+        .sophia-message {
+            background-color: #A1887F;
+            color: white;
+            align-self: flex-end; /* Sophia's messages on the right */
+            border-bottom-right-radius: 0;
+        }
+        .sophia-message .coptic-text { color: #FFF; }
+        #sophia-chat-form {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #D7CCC8;
+        }
+        #sophia-chat-input {
+            flex-grow: 1;
+            border: 1px solid #BCAAA4;
+            border-radius: 8px;
+            padding: 0.75rem;
+            background-color: #FFFDF9;
+        }
+        #sophia-chat-send {
+            margin-right: 0.75rem;
+            background-color: #795548;
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #sophia-chat-send:hover {
+            background-color: #5D4037;
+        }
+        .typing-indicator {
+            align-self: flex-end;
+            font-style: italic;
+            color: #757575;
+        }
     </style>
 </head>
 <body class="bg-[#FDF5E6] text-gray-800">
 
+    <!-- Main Content -->
     <header class="bg-[#8D6E63] text-white p-6 shadow-xl sticky top-0 z-20">
         <div class="container mx-auto text-center">
             <h1 class="text-4xl font-bold header-title">قاموس اللغة القبطية الشامل</h1>
             <p class="text-lg mt-2">اكتشف كنوز اللغة القبطية العريقة</p>
         </div>
     </header>
-
     <div class="container mx-auto p-6">
         <div class="mb-8">
-            <input type="text" id="searchInput"
-                   class="search-input w-full p-4 text-lg border-2 border-[#A1887F] rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#8D6E63] placeholder-gray-500 text-right"
-                   placeholder="ابحث عن كلمة بالقبطية، النطق العربي، أو المعنى العربي..."
-                   onkeyup="searchDictionary()">
+            <input type="text" id="searchInput" class="search-input w-full p-4 text-lg border-2 border-[#A1887F] rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#8D6E63] placeholder-gray-500 text-right" placeholder="ابحث عن كلمة بالقبطية، النطق العربي، أو المعنى العربي..." onkeyup="searchDictionary()">
         </div>
-        
+        <!-- MODIFIED Disclaimer Box -->
         <div id="disclaimer" class="disclaimer-box fade-in-effect">
             <p><b>ملحوظة هامة:</b> هذا القاموس ما زال قيد التطوير وقد يحتوي على بعض الأخطاء.</p>
-            <p>نفخر بكونه <b>أول قاموس للغة القبطية</b> مدعوم بتقنيات الذكاء الاصطناعي.</p>
+            <p>نفخر بكونه <b>أول قاموس قبطي</b> مدعوم بالذكاء الاصطناعي، مع دعم كامل لـ<b>القبطي المعرب</b>.</p>
+            <p><b>ميزة جديدة:</b> نقدم لكم المساعدة الذكية "صوفيا" <span class="coptic-text text-base">ⲥⲟⲫⲓⲁ</span> (الأيقونة أسفل اليسار)، لمساعدتكم في فهم القواعد والفروقات بين الكلمات وأي سؤال يخص اللغة.</p>
             <p class="mt-2">إذا لم تجد الكلمة التي تبحث عنها، <b>حاول البحث عنها مرة أخرى</b> للحصول على نتائج أدق.</p>
         </div>
     </div>
-
     <main class="container mx-auto px-6">
-        <div id="dictionaryEntries" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Dictionary entries will be populated here -->
-        </div>
+        <div id="dictionaryEntries" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         <div id="initialMessage" class="initial-placeholder text-center text-xl text-gray-500 mt-10">
             <p>ابدأ الكتابة في شريط البحث لعرض الكلمات.</p>
         </div>
         <div id="noResults" class="no-results-container text-center text-xl text-gray-500 mt-10 hidden">
             <p id="noResultsMessage" class="mb-4">لم يتم العثور على نتائج مطابقة لبحثك في القاموس المحلي.</p>
-            <button id="searchOnlineButton" 
-                    class="bg-[#795548] hover:bg-[#5D4037] text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors duration-300">
+            <button id="searchOnlineButton" class="bg-[#795548] hover:bg-[#5D4037] text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors duration-300">
                 البحث عن "<span id="onlineSearchTerm"></span>" أونلاين
             </button>
             <div id="loadingIndicator" class="mt-6 hidden">
@@ -154,26 +210,49 @@
             </div>
             <div id="onlineResultDisplay" class="online-result-container mt-6 hidden">
                 <h3 class="text-xl font-semibold mb-3 text-[#5D4037]">نتيجة البحث أونلاين:</h3>
-                <div id="onlineResultContent" class="online-result-content">
-                    <!-- Online results will be shown here -->
-                </div>
+                <div id="onlineResultContent" class="online-result-content"></div>
             </div>
         </div>
     </main>
-
     <footer class="bg-[#8D6E63] text-white text-center p-8 mt-16">
         <p class="text-lg">&copy; 2025 قاموس اللغة القبطية. جميع الحقوق محفوظة.</p>
         <p class="text-md mt-1">تم التطوير بواسطة Jonology</p>
     </footer>
 
+    <div id="sophia-fab" title="اسأل صوفيا">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C3.34315 2 2 3.34315 2 5V15C2 16.6569 3.34315 18 5 18H7.93813L12.4273 22.1196C12.7915 22.4561 13.3615 22.2428 13.3615 21.7923V18H19C20.6569 18 22 16.6569 22 15V5C22 3.34315 20.6569 2 19 2H5ZM12.5 7.5H11.5V10.5H8.5V11.5H11.5V14.5H12.5V11.5H15.5V10.5H12.5V7.5Z"/>
+        </svg>
+    </div>
+
+    <div id="sophia-modal">
+        <div id="sophia-chat-window">
+            <div id="sophia-chat-header">
+                <div class="flex items-center">
+                    <h3>صوفيا</h3>
+                    <span class="coptic-text">ⲥⲟⲫⲓⲁ</span>
+                </div>
+                <button id="sophia-close-btn" class="text-2xl">&times;</button>
+            </div>
+            <div id="sophia-chat-log">
+                <div class="chat-message sophia-message">
+                    أهلاً بك! أنا صوفيا، مساعدتك في اللغة القبطية. كيف يمكنني أن أخدمك اليوم؟
+                </div>
+            </div>
+            <form id="sophia-chat-form">
+                <button id="sophia-chat-send" type="submit">إرسال</button>
+                <input type="text" id="sophia-chat-input" placeholder="اسأل عن القواعد، الترجمة، أو أي شيء آخر..." autocomplete="off">
+            </form>
+        </div>
+    </div>
+
     <script>
+        // --- Existing Dictionary Script ---
         const dictionary = [
             { coptic: "ⲧⲉⲃⲧⲓ", pronunciation_ar: "تِبتي", meaning_ar: "سمكة" }, { coptic: "ⲙⲱⲟⲩ", pronunciation_ar: "مو أُو", meaning_ar: "ماء" }, { coptic: "ⲱⲓⲕ", pronunciation_ar: "أُويك", meaning_ar: "خبز" }, { coptic: "ⲣⲏ", pronunciation_ar: "ري", meaning_ar: "شمس" }, { coptic: "ⲏⲓ", pronunciation_ar: "إِي", meaning_ar: "بيت" }, { coptic: "ⲁⲅⲁⲡⲏ", pronunciation_ar: "أغابي", meaning_ar: "محبة" }, { coptic: "ⲣⲱⲙⲓ", pronunciation_ar: "رومي", meaning_ar: "إنسان/رجل" }, { coptic: "ⲥϩⲓⲙⲓ", pronunciation_ar: "إسهيمي", meaning_ar: "امرأة" }, { coptic: "ⲟⲩⲱⲓⲛⲓ", pronunciation_ar: "أوويني", meaning_ar: "نور" }, { coptic: "ⲣⲁⲛ", pronunciation_ar: "ران", meaning_ar: "اسم" }, { coptic: "ⲛⲟⲩⲧⲉ", pronunciation_ar: "نوتي", meaning_ar: "الله" }, { coptic: "ⲁⲅⲅⲉⲗⲟⲥ", pronunciation_ar: "أنجيلوس", meaning_ar: "ملاك" }, { coptic: "ⲧⲟⲟⲩ", pronunciation_ar: "تو أُو", meaning_ar: "جبل" }, { coptic: "ⲉⲓⲱⲧ", pronunciation_ar: "يوت", meaning_ar: "أب" }, { coptic: "ⲙⲁⲁⲩ", pronunciation_ar: "ما أُو", meaning_ar: "أم" }, { coptic: "ϣⲏⲣⲓ", pronunciation_ar: "شيري", meaning_ar: "ابن/طفل" }, { coptic: "ϣⲉⲉⲣⲓ", pronunciation_ar: "شيري (مؤنث)", meaning_ar: "ابنة/طفلة" }, { coptic: "ⲕⲁϩ", pronunciation_ar: "كاه", meaning_ar: "أرض" }, { coptic: "ⲡⲉ", pronunciation_ar: "بي", meaning_ar: "سماء" }, { coptic: "ⲭⲁⲣⲓⲥ", pronunciation_ar: "خاريس", meaning_ar: "نعمة" }, { coptic: "ⲥⲟⲛ", pronunciation_ar: "صون", meaning_ar: "أخ" }, { coptic: "ⲥⲱⲛⲓ", pronunciation_ar: "صوني", meaning_ar: "أخت" }, { coptic: "ϫⲟⲉⲓⲥ", pronunciation_ar: "تشويس", meaning_ar: "سيد/رب" }, { coptic: "ϩⲏⲧ", pronunciation_ar: "هيت", meaning_ar: "قلب" }, { coptic: "ⲁϥⲧ", pronunciation_ar: "آفت", meaning_ar: "رأس" }, { coptic: "ϫⲓϫ", pronunciation_ar: "چيتش", meaning_ar: "يد" }, { coptic: "ⲃⲁⲗ", pronunciation_ar: "ڤال", meaning_ar: "عين" }, { coptic: "ⲣⲟ", pronunciation_ar: "رو", meaning_ar: "فم" }, { coptic: "ⲛⲁϩϯ", pronunciation_ar: "ناهتي", meaning_ar: "إيمان" }, { coptic: "ⲥⲁϫⲓ", pronunciation_ar: "ساچِي", meaning_ar: "كلمة/كلام" }, { coptic: "ⲁϣ", pronunciation_ar: "آش", meaning_ar: "ماذا/أي" }, { coptic: "ⲛⲓⲙ", pronunciation_ar: "نيم", meaning_ar: "مَنْ" }, { coptic: "ⲑⲱⲛ", pronunciation_ar: "ثون", meaning_ar: "أين" }, { coptic: "ⲧⲛⲁⲩ", pronunciation_ar: "إتناو", meaning_ar: "متى" }, { coptic: "ⲟⲩ", pronunciation_ar: "أو", meaning_ar: "واحد/واحدة (للمذكر)" }, { coptic: "ⲟⲩⲓ", pronunciation_ar: "أوي", meaning_ar: "واحدة (للمؤنث)" }, { coptic: "ⲥⲛⲁⲩ", pronunciation_ar: "إسناف", meaning_ar: "اثنان/اثنتان" }, { coptic: "ϣⲟⲙⲧ", pronunciation_ar: "شومت", meaning_ar: "ثلاثة" }, { coptic: "ϥⲧⲟⲟⲩ", pronunciation_ar: "إفتو أو", meaning_ar: "أربعة" }, { coptic: "ϯⲟⲩ", pronunciation_ar: "إتيو", meaning_ar: "خمسة" }, { coptic: "ⲥⲟⲟⲩ", pronunciation_ar: "صو أو", meaning_ar: "ستة" }, { coptic: "ϣⲁϣϥ", pronunciation_ar: "شاشف", meaning_ar: "سبعة" }, { coptic: "ϣⲙⲟⲩⲛ", pronunciation_ar: "إشمون", meaning_ar: "ثمانية" }, { coptic: "ⲯⲓⲥ", pronunciation_ar: "إبسيس", meaning_ar: "تسعة" }, { coptic: "ⲙⲏⲧ", pronunciation_ar: "ميت", meaning_ar: "عشرة" }, { coptic: "ⲉϩⲟⲟⲩ", pronunciation_ar: "إيهوؤو", meaning_ar: "يوم" }, { coptic: "ⲉϫⲱⲣϩ", pronunciation_ar: "إيجوره", meaning_ar: "ليلة" }, { coptic: "ⲣⲟⲙⲡⲓ", pronunciation_ar: "رومبي", meaning_ar: "سنة" }, { coptic: "ⲁⲃⲟⲧ", pronunciation_ar: "أڤوت", meaning_ar: "شهر" }, { coptic: "ⲡⲛⲉⲩⲙⲁ", pronunciation_ar: "إبنيفما", meaning_ar: "روح" }, { coptic: "ⲥⲱⲙⲁ", pronunciation_ar: "صوما", meaning_ar: "جسد" }, { coptic: "ⲯⲩⲭⲏ", pronunciation_ar: "إبسيشي", meaning_ar: "نفس" }, { coptic: "ⲛⲟϭ", pronunciation_ar: "نوتش", meaning_ar: "كبير" }, { coptic: "ⲕⲟⲩϫⲓ", pronunciation_ar: "كودجي", meaning_ar: "صغير" }, { coptic: "ⲛⲁⲛⲟⲩϥ", pronunciation_ar: "نانوف", meaning_ar: "جيد/صالح (للمذكر)" }, { coptic: "ⲛⲁⲛⲟⲩⲥ", pronunciation_ar: "نانوس", meaning_ar: "جيدة/صالحة (للمؤنث)" }, { coptic: "ϩⲱⲟⲩ", pronunciation_ar: "هوأوو", meaning_ar: "شرير/سيء" }, { coptic: "ⲙⲉⲣⲓⲧ", pronunciation_ar: "ميريت", meaning_ar: "حبيب/محبوب" }, { coptic: "ϯⲙⲓ", pronunciation_ar: "تيمي", meaning_ar: "مدينة/قرية" }, { coptic: "ⲙⲟⲛⲁⲭⲟⲥ", pronunciation_ar: "موناخوس", meaning_ar: "راهب" }
         ];
-
         const dictionaryEntriesContainer = document.getElementById('dictionaryEntries');
         const noResultsDiv = document.getElementById('noResults');
-        const noResultsMessageEl = document.getElementById('noResultsMessage');
         const searchOnlineButton = document.getElementById('searchOnlineButton');
         const onlineSearchTermSpan = document.getElementById('onlineSearchTerm');
         const initialMessageDiv = document.getElementById('initialMessage');
@@ -182,29 +261,18 @@
         const onlineResultDisplay = document.getElementById('onlineResultDisplay');
         const onlineResultContent = document.getElementById('onlineResultContent');
 
-        function applyFadeIn(element) {
-            if (!element) return;
-            element.classList.remove('hidden');
-            void element.offsetWidth; 
-            element.classList.add('fade-in-effect');
-        }
-
-        function hideElement(element) {
-            if (!element) return;
-            element.classList.remove('fade-in-effect');
-            element.classList.add('hidden');
-        }
+        function applyFadeIn(element) { if (element) { element.classList.remove('hidden'); void element.offsetWidth; element.classList.add('fade-in-effect'); } }
+        function hideElement(element) { if (element) { element.classList.remove('fade-in-effect'); element.classList.add('hidden'); } }
 
         function displayEntries(entriesToDisplay, searchTerm = "") {
             dictionaryEntriesContainer.innerHTML = '';
             hideElement(onlineResultDisplay);
             onlineResultContent.innerHTML = '';
             hideElement(loadingIndicator);
-
             if (entriesToDisplay.length === 0) {
                 if (searchTerm) {
                     hideElement(initialMessageDiv);
-                    noResultsMessageEl.textContent = 'لم يتم العثور على نتائج مطابقة لبحثك في القاموس المحلي.';
+                    document.getElementById('noResultsMessage').textContent = 'لم يتم العثور على نتائج مطابقة لبحثك في القاموس المحلي.';
                     onlineSearchTermSpan.textContent = searchTerm;
                     searchOnlineButton.classList.remove('hidden');
                     applyFadeIn(noResultsDiv);
@@ -217,11 +285,7 @@
                     const cardDiv = document.createElement('div');
                     cardDiv.className = 'word-card rounded-lg p-6 shadow-lg text-center fade-in-effect';
                     cardDiv.style.animationDelay = `${index * 0.05}s`;
-                    cardDiv.innerHTML = `
-                        <h2 class="coptic-text font-bold mb-3">${entry.coptic}</h2>
-                        <p class="pronunciation-text text-lg mb-2">(${entry.pronunciation_ar})</p>
-                        <p class="meaning-text text-xl">${entry.meaning_ar}</p>
-                    `;
+                    cardDiv.innerHTML = `<h2 class="coptic-text font-bold mb-3">${entry.coptic}</h2><p class="pronunciation-text text-lg mb-2">(${entry.pronunciation_ar})</p><p class="meaning-text text-xl">${entry.meaning_ar}</p>`;
                     dictionaryEntriesContainer.appendChild(cardDiv);
                 });
             }
@@ -237,11 +301,7 @@
                 return;
             }
             hideElement(initialMessageDiv);
-            const filteredEntries = dictionary.filter(entry => 
-                entry.coptic.toLowerCase().includes(searchTerm) ||
-                entry.pronunciation_ar.toLowerCase().includes(searchTerm) ||
-                entry.meaning_ar.toLowerCase().includes(searchTerm)
-            );
+            const filteredEntries = dictionary.filter(entry => entry.coptic.toLowerCase().includes(searchTerm) || entry.pronunciation_ar.toLowerCase().includes(searchTerm) || entry.meaning_ar.toLowerCase().includes(searchTerm));
             displayEntries(filteredEntries, searchTerm);
         }
 
@@ -250,101 +310,5 @@
             hideElement(searchOnlineButton); 
             hideElement(onlineResultDisplay);
             onlineResultContent.innerHTML = '';
-
-            // **MODIFIED: API Key has been inserted**
             const apiKey = "AIzaSyBmT1DlO6At0OpDZET3M1bsp8Jidz-CGZo";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-            
-            const prompt = `مهمتك هي العمل كخبير دقيق في اللغة القبطية (اللهجة البحيرية) وتقديم معلومات شاملة عن الكلمة أو العبارة: "${term}".
-تجنب أي مقدمات. ابدأ بالإجابة مباشرة.
-
-يجب أن تكون الإجابة بالترتيب والتنسيق التالي حصراً:
-1.  الكلمة/العبارة بالقبطية: [الكلمة هنا]
-2.  النطق بالعربية: [النطق الصوتي الدقيق جداً]
-3.  المعنى بالعربية: [ابحث عن **جميع** المعاني أو الترجمات المحتملة. **يجب** عرضها في قائمة رقمية (أ، ب، ج،...) إذا كان هناك أكثر من معنى واحد، مع توضيح سياق كل معنى.]
-4.  شرح إضافي: [قدم شرحاً موجزاً ومفصلاً عن أصل الكلمة أو استخدامها، إن وجدت.]
-
-**قواعد إلزامية للنطق والكتابة يجب اتباعها بدقة:**
-* **كلمة متصلة:** النطق بالعربية يجب أن يكون **كلمة واحدة متصلة** وقابلة للقراءة، وليس حروفاً منفصلة.
-* **حرف ϩ (هوري):** يُنطق ويُكتب دائماً **هاء (هـ)**. مثال: **ϩⲏⲧ** تُكتب "**هيت**".
-* **حرف Ⲭ (كي):** يُنطق ويُكتب دائماً **كاف (ك)**. مثال: **Ⲭⲏⲙⲓ** تُكتب وتُنطق "**كِيمي**".
-* **حرف ⲓ (يوتا) في النهاية:** يُنطق ويُكتب دائماً كـ**ياء (ي)** واضحة. مثال: **Ⲭⲏⲙⲓ** تُكتب "**كِيمي**"، و**ⲥⲁϫⲓ** تُكتب "**ساچِي**". لا تختصرها أبداً إلى مجرد كسرة.
-
-إذا لم تجد تعريفاً موثوقاً، أجب فقط بـ "لم يتم العثور على تعريف دقيق لهذه الكلمة."`;
-
-            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
-                const result = await response.json();
-                
-                let definitionText = "لم نتمكن من الحصول على تعريف لهذه الكلمة.";
-                if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts.length > 0) {
-                    definitionText = result.candidates[0].content.parts[0].text;
-                }
-                
-                if (definitionText.toLowerCase().includes("القبطية:")) {
-                    let formattedHtml = '';
-                    const lines = definitionText.split('\n');
-                    lines.forEach(line => {
-                        const trimmedLine = line.trim();
-                        if (trimmedLine.match(/^1?\.?\s*الكلمة\/العبارة بالقبطية:/) || trimmedLine.match(/^1?\.?\s*الكلمة بالقبطية:/)) {
-                            const parts = trimmedLine.split(':');
-                            formattedHtml += `<p><span class="ai-result-label">${parts[0]}:</span> <span class="ai-result-coptic">${parts.slice(1).join(':').trim()}</span></p>`;
-                        } else if (trimmedLine.match(/^2?\.?\s*النطق بالعربية:/)) {
-                            const parts = trimmedLine.split(':');
-                            formattedHtml += `<p><span class="ai-result-label">${parts[0]}:</span> <span class="ai-result-pronunciation">${parts.slice(1).join(':').trim()}</span></p>`;
-                        } else if (trimmedLine.match(/^3?\.?\s*المعنى بالعربية:/)) {
-                            const parts = trimmedLine.split(':');
-                            let meaningsHtml = parts.slice(1).join(':').trim().replace(/(أ\.|ب\.|ج\.)/g, '<br>$1');
-                            if (meaningsHtml.startsWith('<br>')) {
-                                meaningsHtml = meaningsHtml.substring(4);
-                            }
-                            formattedHtml += `<p><span class="ai-result-label">${parts[0]}:</span> <span class="ai-result-meaning">${meaningsHtml}</span></p>`;
-                        } else if (trimmedLine.match(/^4?\.?\s*شرح إضافي:/)) {
-                            const parts = trimmedLine.split(':');
-                            formattedHtml += `<p class="ai-result-explanation"><span class="ai-result-label">${parts[0]}:</span> ${parts.slice(1).join(':').trim()}</p>`;
-                        } else if (trimmedLine) {
-                            if (trimmedLine.match(/^(أ\.|ب\.|ج\.)/)) {
-                                formattedHtml += `<p class="ai-result-meaning" style="padding-right: 15px;">${trimmedLine}</p>`;
-                            } else {
-                                formattedHtml += `<p>${trimmedLine}</p>`;
-                            }
-                        }
-                    });
-                    onlineResultContent.innerHTML = formattedHtml;
-                } else {
-                    onlineResultContent.textContent = definitionText;
-                }
-                
-                applyFadeIn(onlineResultDisplay);
-
-            } catch (error) {
-                console.error('Error fetching online definition:', error);
-                onlineResultContent.textContent = 'حدث خطأ أثناء محاولة البحث أونلاين. يرجى المحاولة مرة أخرى.';
-                applyFadeIn(onlineResultDisplay);
-            } finally {
-                hideElement(loadingIndicator);
-            }
-        }
-
-        searchOnlineButton.addEventListener('click', () => {
-            const termToSearch = onlineSearchTermSpan.textContent;
-            if (termToSearch) fetchOnlineDefinition(termToSearch);
-        });
-
-        window.onload = () => {
-            hideElement(dictionaryEntriesContainer);
-            hideElement(noResultsDiv);
-            applyFadeIn(initialMessageDiv);
-            applyFadeIn(document.getElementById('disclaimer'));
-        };
-    </script>
-</body>
-</html>
+            const apiUrl = `https://generativelanguage
