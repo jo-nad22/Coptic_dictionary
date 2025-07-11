@@ -308,4 +308,127 @@
 
             async function fetchOnlineDefinition(term) {
                 applyFadeIn(loadingIndicator);
-                hideElement(searchOnlineButto
+                hideElement(searchOnlineButton); 
+                hideElement(onlineResultDisplay);
+                onlineResultContent.innerHTML = '';
+                const apiKey = "AIzaSyBmT1DlO6At0OpDZET3M1bsp8Jidz-CGZo";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const prompt = `مهمتك هي العمل كخبير دقيق في اللغة القبطية (اللهجة البحيرية) وتقديم معلومات شاملة عن الكلمة أو العبارة: "${term}". تجنب أي مقدمات. ابدأ بالإجابة مباشرة. يجب أن تكون الإجابة بالترتيب والتنسيق التالي حصراً: 1. الكلمة/العبارة بالقبطية: [الكلمة هنا] 2. النطق بالعربية: [النطق الصوتي الدقيق جداً] 3. المعنى بالعربية: [ابحث عن **جميع** المعاني أو الترجمات المحتملة. **يجب** عرضها في قائمة رقمية (أ، ب، ج،...) إذا كان هناك أكثر من معنى واحد، مع توضيح سياق كل معنى.] 4. شرح إضافي: [قدم شرحاً موجزاً ومفصلاً عن أصل الكلمة أو استخدامها، إن وجدت.] **قواعد إلزامية للنطق والكتابة يجب اتباعها بدقة:** * **كلمة متصلة:** النطق بالعربية يجب أن يكون **كلمة واحدة متصلة** وقابلة للقراءة، وليس حروفاً منفصلة. * **حرف ϩ (هوري):** يُنطق ويُكتب دائماً **هاء (هـ)**. مثال: **ϩⲏⲧ** تُكتب "**هيت**". * **حرف Ⲭ (كي):** يُنطق ويُكتب دائماً **كاف (ك)**. مثال: **Ⲭⲏⲙⲓ** تُكتب وتُنطق "**كِيمي**". * **حرف ⲓ (يوتا) في النهاية:** يُنطق ويُكتب دائماً كـ**ياء (ي)** واضحة. مثال: **Ⲭⲏⲙⲓ** تُكتب "**كِيمي**"، و**ⲥⲁϫⲓ** تُكتب "**ساچِي**". لا تختصرها أبداً إلى مجرد كسرة. إذا لم تجد تعريفاً موثوقاً، أجب فقط بـ "لم يتم العثور على تعريف دقيق لهذه الكلمة."`;
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                try {
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                    const result = await response.json();
+                    let definitionText = "لم نتمكن من الحصول على تعريف لهذه الكلمة.";
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts.length > 0) { definitionText = result.candidates[0].content.parts[0].text; }
+                    if (definitionText.toLowerCase().includes("القبطية:")) {
+                        let formattedHtml = '';
+                        const lines = definitionText.split('\n');
+                        lines.forEach(line => {
+                            const trimmedLine = line.trim();
+                            if (trimmedLine.match(/^1?\.?\s*الكلمة\/العبارة بالقبطية:/) || trimmedLine.match(/^1?\.?\s*الكلمة بالقبطية:/)) { const parts = trimmedLine.split(':'); formattedHtml += `<p><span class="ai-result-label">${parts[0]}:</span> <span class="ai-result-coptic">${parts.slice(1).join(':').trim()}</span></p>`; } 
+                            else if (trimmedLine.match(/^2?\.?\s*النطق بالعربية:/)) { const parts = trimmedLine.split(':'); formattedHtml += `<p><span class="ai-result-label">${parts[0]}:</span> <span class="ai-result-pronunciation">${parts.slice(1).join(':').trim()}</span></p>`; } 
+                            else if (trimmedLine.match(/^3?\.?\s*المعنى بالعربية:/)) { const parts = trimmedLine.split(':'); let meaningsHtml = parts.slice(1).join(':').trim().replace(/(أ\.|ب\.|ج\.)/g, '<br>$1'); if (meaningsHtml.startsWith('<br>')) { meaningsHtml = meaningsHtml.substring(4); } formattedHtml += `<p><span class="ai-result-label">${parts[0]}:</span> <span class="ai-result-meaning">${meaningsHtml}</span></p>`; } 
+                            else if (trimmedLine.match(/^4?\.?\s*شرح إضافي:/)) { const parts = trimmedLine.split(':'); formattedHtml += `<p class="ai-result-explanation"><span class="ai-result-label">${parts[0]}:</span> ${parts.slice(1).join(':').trim()}</p>`; } 
+                            else if (trimmedLine) { if (trimmedLine.match(/^(أ\.|ب\.|ج\.)/)) { formattedHtml += `<p class="ai-result-meaning" style="padding-right: 15px;">${trimmedLine}</p>`; } else { formattedHtml += `<p>${trimmedLine}</p>`; } }
+                        });
+                        onlineResultContent.innerHTML = formattedHtml;
+                    } else { onlineResultContent.textContent = definitionText; }
+                    applyFadeIn(onlineResultDisplay);
+                } catch (error) { console.error('Error fetching online definition:', error); onlineResultContent.textContent = 'حدث خطأ أثناء محاولة البحث أونلاين. يرجى المحاولة مرة أخرى.'; applyFadeIn(onlineResultDisplay); } 
+                finally { hideElement(loadingIndicator); }
+            }
+            
+            // **MODIFIED: Programmatic event listener for search**
+            searchInput.addEventListener('keyup', searchDictionary);
+            searchOnlineButton.addEventListener('click', () => { const termToSearch = onlineSearchTermSpan.textContent; if (termToSearch) fetchOnlineDefinition(termToSearch); });
+            
+            // --- Sophia Chatbot Script ---
+            const sophiaFab = document.getElementById('sophia-fab');
+            const sophiaModal = document.getElementById('sophia-modal');
+            const sophiaCloseBtn = document.getElementById('sophia-close-btn');
+            const sophiaChatForm = document.getElementById('sophia-chat-form');
+            const sophiaChatInput = document.getElementById('sophia-chat-input');
+            const sophiaChatLog = document.getElementById('sophia-chat-log');
+
+            sophiaFab.addEventListener('click', () => sophiaModal.classList.add('visible'));
+            sophiaCloseBtn.addEventListener('click', () => sophiaModal.classList.remove('visible'));
+            sophiaModal.addEventListener('click', (e) => { if (e.target === sophiaModal) { sophiaModal.classList.remove('visible'); } });
+
+            sophiaChatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const userMessage = sophiaChatInput.value.trim();
+                if (!userMessage) return;
+                
+                addMessageToLog(userMessage, 'user');
+                sophiaChatInput.value = '';
+                getSophiaResponse(userMessage);
+            });
+
+            function addMessageToLog(message, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${sender}-message`;
+                const textNode = document.createTextNode(message);
+                messageDiv.appendChild(textNode);
+                sophiaChatLog.appendChild(messageDiv);
+                sophiaChatLog.scrollTop = sophiaChatLog.scrollHeight;
+            }
+
+            function showTypingIndicator() {
+                const indicatorDiv = document.createElement('div');
+                indicatorDiv.id = 'typing-indicator';
+                indicatorDiv.className = 'chat-message typing-indicator';
+                indicatorDiv.textContent = 'صوفيا تكتب...';
+                sophiaChatLog.appendChild(indicatorDiv);
+                sophiaChatLog.scrollTop = sophiaChatLog.scrollHeight;
+            }
+
+            function removeTypingIndicator() {
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) { indicator.remove(); }
+            }
+
+            async function getSophiaResponse(userMessage) {
+                showTypingIndicator();
+                const apiKey = "AIzaSyBmT1DlO6At0OpDZET3M1bsp8Jidz-CGZo";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const prompt = `أنتِ "صوفيا"، مساعدة ذكية وخبيرة باللغة القبطية.
+**شخصيتكِ:**
+* تحدثي عن نفسكِ **دائماً** بصيغة المؤنث (مثال: "أنا مستعدة لمساعدتك"، "سأبحث لكِ").
+* خاطبي المستخدم **افتراضياً** بصيغة المذكر (مثال: "كيف يمكنني مساعدتك؟"، "سؤالك مهم").
+* **استثناء:** فقط إذا كان سؤال المستخدم يشير بوضوح إلى أنه أنثى (مثال: "أنا طالبة"، "أنا مهتمة بـ"، "شكراً لكِ"، "لو سمحتي")، يمكنكِ حينها مخاطبته بصيغة المؤنث.
+
+**مهمتكِ:**
+* أجيبي على سؤال المستخدم بأسلوب ودود، واضح، ودقيق.
+* قدمي شرحاً مبسطاً وتجنبي الإجابات القصيرة جداً.
+* إذا كان السؤال يتضمن كلمة قبطية، اذكريها بالخط القبطي.
+
+السؤال هو: "${userMessage}"`;
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+                try {
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const result = await response.json();
+                    let sophiaResponse = "عذراً، لم أتمكن من فهم السؤال. هل يمكنك إعادة صياغته؟";
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts.length > 0) {
+                        sophiaResponse = result.candidates[0].content.parts[0].text;
+                    }
+                    removeTypingIndicator();
+                    addMessageToLog(sophiaResponse, 'sophia');
+                } catch (error) {
+                    console.error("Error with Sophia's response:", error);
+                    removeTypingIndicator();
+                    addMessageToLog("عفواً، حدث خطأ ما. يرجى المحاولة مرة أخرى.", 'sophia');
+                }
+            }
+
+            // Initial setup on page load
+            hideElement(dictionaryEntriesContainer);
+            hideElement(noResultsDiv);
+            applyFadeIn(initialMessageDiv);
+            applyFadeIn(document.getElementById('disclaimer'));
+        });
+    </script>
+</body>
+</html>
